@@ -4,6 +4,8 @@ import { AppState } from "../redux/store";
 import { getTasks, addTask, completeTask } from "../redux/actions/taskActions";
 import { Task } from "../redux/types";
 
+import { TextField, Button, Card, CardContent } from "@mui/material";
+
 interface Props {
   tasks: Task[];
   projectId: string;
@@ -36,31 +38,40 @@ class TaskPage extends Component<Props, State> {
 
   render() {
     return (
-      <div>
-        <h3>Tasks</h3>
+      <Card style={{ marginTop: 20 }}>
+        <CardContent>
+          <h3>Tasks</h3>
 
-        <input
-          value={this.state.title}
-          onChange={(e) => this.setState({ title: e.target.value })}
-          placeholder="Task title"
-        />
+          <TextField
+            label="Task title"
+            value={this.state.title}
+            onChange={(e) => this.setState({ title: e.target.value })}
+            fullWidth
+            margin="normal"
+          />
 
-        <button onClick={this.handleAdd}>Add Task</button>
+          <Button variant="contained" onClick={this.handleAdd}>
+            Add Task
+          </Button>
 
-        <ul>
-          {this.props.tasks.map((t) => (
-            <li key={t._id}>
-              {t.title} - {t.completed ? "Done" : "Pending"}
+          <ul>
+            {this.props.tasks.map((t) => (
+              <li key={t._id}>
+                {t.title} - {t.completed ? "Done" : "Pending"}
 
-              {!t.completed && (
-                <button onClick={() => this.props.completeTask(t._id)}>
-                  Complete
-                </button>
-              )}
-            </li>
-          ))}
-        </ul>
-      </div>
+                {!t.completed && (
+                  <Button
+                    size="small"
+                    onClick={() => this.props.completeTask(t._id)}
+                  >
+                    Complete
+                  </Button>
+                )}
+              </li>
+            ))}
+          </ul>
+        </CardContent>
+      </Card>
     );
   }
 }
