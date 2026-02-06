@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
+
 import { AppState } from "../redux/store";
 import { getTasks, addTask, completeTask } from "../redux/actions/taskActions";
 import { Task } from "../redux/types";
@@ -24,13 +25,21 @@ class TaskPage extends Component<Props, State> {
   };
 
   componentDidMount() {
+    // ✔ use projectId from props (your original design)
     this.props.getTasks(this.props.projectId);
+  }
+
+  componentDidUpdate(prevProps: Props) {
+    // ✔ reload tasks when project changes
+    if (prevProps.projectId !== this.props.projectId) {
+      this.props.getTasks(this.props.projectId);
+    }
   }
 
   handleAdd = () => {
     this.props.addTask({
       title: this.state.title,
-      projectId: this.props.projectId,
+      projectId: this.props.projectId,   // ✔ correct
     });
 
     this.setState({ title: "" });

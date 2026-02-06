@@ -23,7 +23,7 @@ export const createProject = async (
   }
 };
 
-// Get All Projects
+
 export const getProjects = async (
   req: Request,
   res: Response,
@@ -37,7 +37,7 @@ export const getProjects = async (
   }
 };
 
-// Update Project
+
 export const updateProject = async (
   req: Request,
   res: Response,
@@ -60,7 +60,7 @@ export const updateProject = async (
   }
 };
 
-// Delete Project + CASCADE DELETE TASKS
+
 export const deleteProject = async (
   req: Request,
   res: Response,
@@ -73,7 +73,6 @@ export const deleteProject = async (
       return res.status(404).json({ message: "Project not found" });
     }
 
-    // 🔥 CASCADE DELETE
     await Task.deleteMany({ projectId: project._id });
 
     await project.deleteOne();

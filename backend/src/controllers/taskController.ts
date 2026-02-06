@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import Task from "../models/Task";
 
-// Create Task
+// ================= CREATE TASK =================
 export const createTask = async (
   req: Request,
   res: Response,
@@ -11,20 +11,24 @@ export const createTask = async (
     const { title, projectId } = req.body;
 
     if (!title || !projectId) {
-      return res
-        .status(400)
-        .json({ message: "Title and ProjectId are required" });
+      return res.status(400).json({
+        message: "Title and ProjectId are required",
+      });
     }
 
-    const task = await Task.create({ title, projectId });
+    const task = await Task.create({
+      title,
+      projectId,
+      completed: false,
+    });
 
-    res.status(201).json(task);
+    return res.status(201).json(task);
   } catch (error) {
     next(error);
   }
 };
 
-// Get Tasks by Project
+
 export const getTasksByProject = async (
   req: Request,
   res: Response,
@@ -32,34 +36,39 @@ export const getTasksByProject = async (
 ) => {
   try {
     const tasks = await Task.find({ projectId: req.params.projectId });
-    res.json(tasks);
+
+    return res.json(tasks || []);
   } catch (error) {
     next(error);
   }
 };
 
-// Update Task
+
 export const updateTask = async (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
   try {
-    const task = await Task.findByIdAndUpdate(req.params.id, req.body, {
-      new: true,
-    });
+    const task = await Task.findByIdAndUpdate(
+      req.params.id,
+      req.body,
+      { new: true }
+    );
 
     if (!task) {
-      return res.status(404).json({ message: "Task not found" });
+      return res.status(404).json({
+        message: "Task not found",
+      });
     }
 
-    res.json(task);
+    return res.json(task);
   } catch (error) {
     next(error);
   }
 };
 
-// Delete Task
+// ================= DELETE TASK =================
 export const deleteTask = async (
   req: Request,
   res: Response,
@@ -69,16 +78,21 @@ export const deleteTask = async (
     const task = await Task.findByIdAndDelete(req.params.id);
 
     if (!task) {
-      return res.status(404).json({ message: "Task not found" });
+      return res.status(404).json({
+        message: "Task not found",
+      });
     }
 
-    res.json({ message: "Task deleted" });
+    return res.json({
+      message: "Task deleted",
+      id: req.params.id,
+    });
   } catch (error) {
     next(error);
   }
 };
 
-// Mark Completed
+// ================= MARK COMPLETED =================
 export const markCompleted = async (
   req: Request,
   res: Response,
@@ -91,7 +105,19 @@ export const markCompleted = async (
       { new: true }
     );
 
-    res.json(task);
+    if (!task) {
+      return res.status(404).json({
+        message: "Task not found",
+      });
+    }
+
+    
+    return res.json({
+      _id: task._id,
+      title: task.title,
+      projectId: task.projectId,
+      completed: task.completed,
+    });
   } catch (error) {
     next(error);
   }

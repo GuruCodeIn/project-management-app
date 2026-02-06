@@ -5,7 +5,14 @@ import { getProjects, addProject } from "../redux/actions/projectActions";
 import { Project } from "../redux/types";
 import TaskPage from "./TaskPage";
 
-import { TextField, Button, Card, CardContent } from "@mui/material";
+import {
+  TextField,
+  Button,
+  Card,
+  CardContent,
+  Typography,
+  Box,
+} from "@mui/material";
 
 interface Props {
   projects: Project[];
@@ -49,11 +56,17 @@ class ProjectPage extends Component<Props, State> {
 
   render() {
     return (
-      <div>
-        <h2>Projects</h2>
+      <Box sx={{ p: 3, maxWidth: 1100, margin: "auto" }}>
+        <Typography variant="h4" sx={{ mb: 2 }}>
+          Project Dashboard
+        </Typography>
 
-        <Card>
+        <Card sx={{ mb: 3, borderRadius: 3 }}>
           <CardContent>
+            <Typography variant="h6" sx={{ mb: 2 }}>
+              Create New Project
+            </Typography>
+
             <TextField
               name="name"
               label="Project Name"
@@ -70,31 +83,76 @@ class ProjectPage extends Component<Props, State> {
               onChange={this.handleChange}
               fullWidth
               margin="normal"
+              multiline
+              rows={2}
             />
 
-            <Button variant="contained" onClick={this.handleSubmit}>
+            <Button
+              variant="contained"
+              onClick={this.handleSubmit}
+              sx={{ mt: 1 }}
+            >
               Add Project
             </Button>
           </CardContent>
         </Card>
 
-        <ul>
+        {/* PROJECT LIST - FLEX BASED (NO GRID ERRORS) */}
+        <Box
+          sx={{
+            display: "flex",
+            flexWrap: "wrap",
+            gap: 2,
+          }}
+        >
           {this.props.projects.map((p) => (
-            <li key={p._id}>
-              <span
-                style={{ cursor: "pointer", color: "blue" }}
+            <Box
+              key={p._id}
+              sx={{
+                width: { xs: "100%", md: "32%" },
+              }}
+            >
+              <Card
+                sx={{
+                  cursor: "pointer",
+                  borderRadius: 3,
+                  border:
+                    this.state.selectedProjectId === p._id
+                      ? "2px solid #1976d2"
+                      : "1px solid #ddd",
+                }}
                 onClick={() => this.selectProject(p._id)}
               >
-                {p.name}
-              </span>
-            </li>
+                <CardContent>
+                  <Typography variant="h6">{p.name}</Typography>
+
+                  <Typography variant="body2" color="text.secondary">
+                    {p.description}
+                  </Typography>
+
+                  <Button
+                    size="small"
+                    sx={{ mt: 1 }}
+                    variant={
+                      this.state.selectedProjectId === p._id
+                        ? "contained"
+                        : "outlined"
+                    }
+                  >
+                    Open
+                  </Button>
+                </CardContent>
+              </Card>
+            </Box>
           ))}
-        </ul>
+        </Box>
 
         {this.state.selectedProjectId && (
-          <TaskPage projectId={this.state.selectedProjectId} />
+          <Box sx={{ mt: 4 }}>
+            <TaskPage projectId={this.state.selectedProjectId} />
+          </Box>
         )}
-      </div>
+      </Box>
     );
   }
 }

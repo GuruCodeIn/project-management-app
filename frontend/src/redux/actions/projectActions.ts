@@ -2,7 +2,8 @@ import axios from "axios";
 import { Dispatch } from "redux";
 import { GET_PROJECTS, ADD_PROJECT } from "../types";
 
-const API = "http://localhost:5001/api/projects";
+const API = "http://localhost:5005/api/projects";
+
 
 export const getProjects = () => async (dispatch: Dispatch) => {
   const res = await axios.get(API);
